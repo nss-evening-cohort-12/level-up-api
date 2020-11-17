@@ -3,4 +3,5 @@
 ```
 pipenv shell
 pipenv install
+python manage.py migrate
 ```
