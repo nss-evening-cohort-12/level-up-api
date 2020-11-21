@@ -15,3 +15,6 @@ class Event(models.Model):
         related_name="participant_events",
         related_query_name="participant_event"
     )
+
+    def __str__(self):
+        return self.description
