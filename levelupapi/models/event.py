@@ -17,6 +17,10 @@ class Event(models.Model):
         related_query_name="participant_event"
     )
 
+    def __str__(self):
+        return self.description
+
+
     @property
     def joined(self):
         return self.__joined
@@ -24,6 +28,3 @@ class Event(models.Model):
     @joined.setter
     def joined(self, value):
         self.__joined = value
-
-    def __str__(self):
-        return self.description

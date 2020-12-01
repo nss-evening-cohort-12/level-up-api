@@ -1,4 +1,5 @@
 """View module for handling requests about events"""
+from levelupapi.models.gamer_event import GamerEvent
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.http import HttpResponseServerError
@@ -163,7 +164,6 @@ class EventsViewSet(ViewSet):
         return Response({}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
-
 class EventUserSerializer(serializers.ModelSerializer):
     """JSON serializer for event organizer's related Django user"""
     class Meta:
@@ -171,7 +171,7 @@ class EventUserSerializer(serializers.ModelSerializer):
         fields = ['first_name', 'last_name', 'email']
 
 
-class EventGamerSerializer(serializers.ModelSerializer):
+class GamerEventerializer(serializers.ModelSerializer):
     """JSON serializer for event organizer"""
     user = EventUserSerializer(many=False)
 
@@ -188,7 +188,7 @@ class GameSerializer(serializers.HyperlinkedModelSerializer):
 
 class EventSerializer(serializers.HyperlinkedModelSerializer):
     """JSON serializer for events"""
-    organizer = EventGamerSerializer(many=False)
+    organizer = GamerEventerializer(many=False)
     game = GameSerializer(many=False)
 
     class Meta:
