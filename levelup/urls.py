@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from levelupapi.views.events import EventsViewSet
-from levelupapi.views import GamesViewSet
+from levelupapi.views import GamesViewSet, Profile
 from django.conf.urls import include
 from django.contrib import admin
 from django.urls import path
@@ -26,6 +26,7 @@ router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'gametypes', GameTypesViewSet, 'gametype')
 router.register(r'games', GamesViewSet, 'game')
 router.register(r'events', EventsViewSet, 'event')
+router.register(r'profile', Profile, 'profile')
 
 
 urlpatterns = [
