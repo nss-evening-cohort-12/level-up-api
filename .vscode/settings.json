@@ -1,3 +1,4 @@
 {
-    "python.linting.pylintEnabled": true
+    // "python.linting.pylintEnabled": true,
+    "python.pythonPath": "/Users/hannahhall/.local/share/virtualenvs/levelup-aqN7eK5A/bin/python"
 }
