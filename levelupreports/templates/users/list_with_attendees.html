@@ -1,0 +1,10 @@
+<h1>Events with Attendees</h1>
+
+{% for event in event_attendee_list %}
+    <h3>{{event.game_title}}</h3>
+    <p>{{event.date}} {{event.time}}</p>
+
+    {% for user in event.attendees %}
+        <p>{{user.full_name}}</p>
+    {% endfor %}
+{% endfor %}
