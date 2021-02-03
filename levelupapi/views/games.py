@@ -2,15 +2,34 @@
 from django.core.exceptions import ValidationError
 from rest_framework import status
 from django.http import HttpResponseServerError
+from rest_framework import permissions
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework import status
 from levelupapi.models import Game, GameType, Gamer
+from rest_framework.permissions import DjangoModelPermissions
+from rest_framework.exceptions import PermissionDenied
 
+class IsOwnerOrReadOnly(permissions.BasePermission):
+    """
+    Object-level permission to only allow owners of an object to edit it.
+    Assumes the model instance has an `owner` attribute.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        # Read permissions are allowed to any request,
+        # so we'll always allow GET, HEAD or OPTIONS requests.
+        if request.method in permissions.SAFE_METHODS:
+            return True
+
+        # Instance must have an attribute named `owner`.
+        return obj.gamer.user == request.user
 
 class GamesViewSet(ViewSet):
     """Level up games"""
+    permission_classes = [ IsOwnerOrReadOnly ]
+    queryset = Game.objects.none()
 
     def create(self, request):
         """Handle POST operations
@@ -86,6 +105,7 @@ class GamesViewSet(ViewSet):
         # creating a new instance of Game, get the game record
         # from the database whose primary key is `pk`
         game = Game.objects.get(pk=pk)
+        self.check_object_permissions(request, game)
         game.title = request.data["title"]
         game.maker = request.data["maker"]
         game.number_of_players = request.data["numberOfPlayers"]
@@ -108,12 +128,15 @@ class GamesViewSet(ViewSet):
         """
         try:
             game = Game.objects.get(pk=pk)
+            self.check_object_permissions(request, game)
             game.delete()
 
             return Response({}, status=status.HTTP_204_NO_CONTENT)
 
         except Game.DoesNotExist as ex:
             return Response({'message': ex.args[0]}, status=status.HTTP_404_NOT_FOUND)
+        except PermissionDenied as ex:
+            return Response({'message': ex.detail}, status=status.HTTP_403_FORBIDDEN)
 
         except Exception as ex:
             return Response({'message': ex.args[0]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
